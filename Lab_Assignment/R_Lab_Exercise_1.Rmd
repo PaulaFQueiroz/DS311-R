@@ -1,6 +1,6 @@
 ---
 title: "DS311 - Basic R Lab Exercise"
-author: "Replace with Your Name"
+author: "Ana Paula Felix de Queiroz"
 date: "1/10/2023"
 output:
   pdf_document: default
@@ -89,15 +89,15 @@ b <- as.double(500)
 c <- as.character(500)
 
 # Enter your code here!
-
-
-
+typeof(a)
+typeof(b)
+typeof(c)
 # Check the data type of the new variable 'd'
 d <- a / b
 
 # Enter your code here!
 
-
+typeof(d)
 
 ```
 
@@ -154,7 +154,14 @@ Hint: Check out the "letters" and "LETTERS" key words in R.
 ```{r}
 # Enter your code here.
 
+alphabet <- letters
+alphabet
 
+
+
+# Create a 2 by 13 matrix for the 26 English upper case letters
+alphabet_matrix <- matrix(LETTERS, nrow = 2, byrow = TRUE)
+alphabet_matrix
 
 ```
 
@@ -230,6 +237,8 @@ df2  # Makes a data frame with three different data types
 
 # Checking the session info
 # sessionInfo()
+x=4
+
 ```
 
 ***
@@ -248,21 +257,23 @@ Part d: Divide y by x and assign it to variable z
 
 part e: Print a statement to report your answer in Part d.
 
+
 Once you finished and knit the RMarkdown file into html file, you should be able to see the message "Congratulation!!  You completed the first exercise in this section!!" in the html document.
 
 ```{r}
 # Write your code here!
 # Part a
 
-
+x=4 
 # Part b
-
+y=12
 
 # Part c
-
+x
+y
 
 # Part d
-
+z= y/x
 
 # Part e
 print(paste("y divided by x is equal to ", z))
