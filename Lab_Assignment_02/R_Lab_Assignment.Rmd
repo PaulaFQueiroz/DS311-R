@@ -1,12 +1,14 @@
 ---
 title: "DS311 - R Lab Assignment"
-author: "Your Name"
+author: "Ana Paula Felix de Queiroz"
 date: "`r Sys.Date()`"
 output: 
   html_document:
     theme: united
     highlight: tango
     df_print: paged
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -35,10 +37,10 @@ a. Report the number of variables and observations in the data set.
 
 ```{r}
 # Enter your code here!
-
+dim(mtcars)
 
 # Answer:
-print("There are total of _____ variables and _____ observations in this data set.")
+print("There are total of 11 variables and 32 observations in this data set.")
 ```
 
 
@@ -48,9 +50,14 @@ b. Print the summary statistics of the data set and report how many discrete and
 ```{r}
 # Enter your code here!
 
+summary(mtcars)
 
+continuous <- sum(sapply(mtcars, is.double))
+discrete <- ncol(mtcars) - continuous
+continuous
+discrete
 # Answer:
-print("There are _____ discrete variables and _____ continuous variables in this data set.")
+print("There are 0 discrete variables and 11 continuous variables in this data set.")
 ```
 
 
@@ -59,11 +66,12 @@ c. Calculate the mean, variance, and standard deviation for the variable **mpg**
 
 ```{r}
 # Enter your code here!
+attach(mtcars)
+m=mean(mpg)
+v=sd(mpg)^2
+s = sd(mpg)
 
-
-
-
-# print(paste("The average of Mile Per Gallon from this data set is ",  , " with variance ",  , " and standard deviation",  , "."))
+print(paste("The average of Mile Per Gallon from this data set is ",m  , " with variance ",v  , " and standard deviation", s , "."))
 ```
 
 
@@ -72,6 +80,24 @@ d. Create two tables to summarize 1) average mpg for each cylinder class and 2) 
 
 ```{r}
 # Enter your code here!
+
+library(dplyr)
+
+# Create a table of average mpg for each cylinder class
+mpg_by_cyl <- mtcars %>% 
+  group_by(cyl) %>% 
+  summarise(avg_mpg = mean(mpg))
+
+mpg_by_cyl
+
+# Create a table of standard deviation of mpg for each gear class
+mpg_by_gear <- mtcars %>% 
+  group_by(gear) %>% 
+  summarise(sd_mpg = sd(mpg))
+
+# Print the table
+print(mpg_by_gear)
+
 
 
 
@@ -84,9 +110,11 @@ e. Create a crosstab that shows the number of observations belong to each cylind
 
 ```{r}
 # Enter your code here!
+crosstab = table(mtcars$cyl,mtcars$gear,
+                 dnn = c("Cyl","gears"))
+crosstab
 
-
-print("The most common car type in this data set is car with ____ cylinders and ____ gears. There are total of _____ cars belong to this specification in the data set.")
+print("The most common car type in this data set is car with 8 cylinders and 3 gears. There are total of 12 cars belong to this specification in the data set.")
 ```
 
 
@@ -107,22 +135,28 @@ head(PlantGrowth)
 
 # Enter your code here!
 
-
+library(ggplot2)
+ggplot(PlantGrowth, aes(x=group, y=weight, fill=group)) + 
+  geom_boxplot() + labs(title = "Weight of Plants by Group", x = "Group", y = "Weight")
 ```
 
 Result:
 
 => Report a paragraph to summarize your findings from the plot!
 
-
+The box plot shows that weights of plants for group TRT2 is higher than the other two with a median at 5.4. While the group Trt1 has the lower median around 4.6. Group CTRL seems to have the largest spread of the 50% of the data. 
+The distribution of group ctrl seem to be skewed to the write while group trt2 seem to be skewed to the left.We are also able to identify that trt1 has outliers. 
 
 b. Using the **mtcars** data set, plot the histogram for the column **mpg** with 10 breaks. Give labels to the title, x-axis, and y-axis on the graph. Report the most observed mpg class from the data set.
 
 ```{r}
+hist(mtcars$mpg, breaks = 10,
+     main = "MPG distribution",
+     xlab = "MPG",
+     ylab = "Frequency")
 
 
-
-print("Most of the cars in this data set are in the class of ______ mile per gallon.")
+print("Most of the cars in this data set are in the class of 10 mile per gallon.")
 ```
 
 
@@ -139,11 +173,19 @@ head(USArrests)
 # Enter your code here!
 
 
+pairs(USArrests, main = "Pairs Plot")
+
+plot(USArrests$Murder, USArrests$Assault,
+     main = "Scatter Plot of Murder and Assault",
+     xlab = "Murder", ylab = "Assault")
 ```
 
 Result:
 
 => Report a paragraph to summarize your findings from the plot!
+It seems like murder and Assault have the highest positive correlation. 
+We could say that there is a moderate positive correlation between Rape and murder as well.
+It seems like Urban Population is the variable with the lowest correlation with Assault and murder. 
 
 
 
@@ -156,6 +198,7 @@ Download the housing data set from www.jaredlander.com and find out what explain
 Note: Check your working directory to make sure that you can download the data into the data folder. 
 
 ```{r, echo=FALSE}
+dir.create("data")
 # Load and clean the housing data set 
 download.file(url='https://www.jaredlander.com/data/housing.csv',
               destfile='data/housing.csv', mode='wb')
@@ -170,8 +213,26 @@ a. Create your own descriptive statistics and aggregation tables to summarize th
 ```{r}
 # Head of the cleaned data set
 head(housingData)
+unique(housingData$Boro)
+summary(housingData)
+
 
 # Enter your code here!
+#table discribing mean and median grouped by value by var Boro
+library(dplyr)
+housingData %>% 
+  group_by(Boro) %>% 
+  summarize(mean_value = mean(Market.Value.per.SqFt), 
+            median_value = median(Market.Value.per.SqFt))
+
+
+housingData %>%
+  group_by(Neighborhood) %>%
+  summarize(mean_value = mean(Market.Value.per.SqFt),
+            median_value = median(Market.Value.per.SqFt)) %>%
+  arrange(desc(mean_value))
+
+summary(housingData$Market.Value.per.SqFt)
 
 
 ```
@@ -180,12 +241,42 @@ b. Create multiple plots to demonstrates the correlations between different vari
 
 ```{r}
 # Enter your code here!
+library(ggplot2)
+ggplot(housingData, aes(x = Boro, y = Market.Value.per.SqFt)) +
+  geom_point() +
+  labs(title = "Market Value by Boro",
+       x = "Boro",
+       y = "Market Value per SqFt")
+top10_neighborhoods <- housingData %>%
+  group_by(Neighborhood) %>%
+  summarize(mean_value = mean(Market.Value.per.SqFt)) %>%
+  arrange(desc(mean_value)) %>%
+  top_n(5, mean_value)
 
+
+ggplot(top10_neighborhoods, aes(x = reorder(Neighborhood, mean_value), y = mean_value)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "Top 5 Neighborhoods by Market Value per SqFt",
+       x = "Neighborhood", y = "Mean Market Value per SqFt")
+
+
+ggplot(housingData, aes(x = Year.Built, y = Boro)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Boro by Year Built",
+       x = "Year Built",
+       y = "Boro")
 
 ```
 
 c. Write a summary about your findings from this exercise.
 
-=> Enter your answer here!
+If we look at the variables Boro and market value we can see that Mahattan has the highest market value per square ft, queens and brooklyn seem to have a similar Market price exept for outliers. its followed by Bronx and then Staten Island. 
+
+Among all the Neighboors Midtown, Flatiron, Midtown West , uper East Side and Chelsea hank on the top highest mean for Market value per square ft
+
+We see that broklyn has one observation as the oldest building, and manhatan has the largest distribution of buildings age with the median around 1960.
+
+
+
 
 
