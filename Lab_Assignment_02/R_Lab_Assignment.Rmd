@@ -2,12 +2,14 @@
 title: "DS311 - R Lab Assignment"
 author: "Ana Paula Felix de Queiroz"
 date: "`r Sys.Date()`"
-output: 
+output:
+  word_document: default
   html_document:
     theme: united
     highlight: tango
     df_print: paged
-editor_options: 
+  pdf_document: default
+editor_options:
   chunk_output_type: console
 ---
 
